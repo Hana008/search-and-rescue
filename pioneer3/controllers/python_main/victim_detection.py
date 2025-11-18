@@ -14,8 +14,3 @@ class VictimDetection:
         except Exception as e:
             print("Could not enable camera.")
             camera = None
-            
-    
-    def scan(self):
-        if self.camera:
-            self.camera.getImage()
