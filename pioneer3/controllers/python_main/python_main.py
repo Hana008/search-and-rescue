@@ -16,8 +16,6 @@ class RobotState(Enum):
 DEBUG = True
 MAX_SPEED = 5.24  # This is max rad/s for the wheels
 K_TURN = 2.6  # Proportional gain for turning
-# How close (in radians) we need to be to the target angle to start driving
-TURN_THRESHOLD_RAD = 0.1  # About 5.7 degrees
 WAIT_VALUE = 100 # Temporary timer value to break up movement between cells
 
 def main():

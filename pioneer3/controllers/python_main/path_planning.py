@@ -64,7 +64,7 @@ class PathPlanning:
                 self.full_path_grid.extend(segment)
             else:
                 self.full_path_grid.extend(segment[1:])
-        
+
         print(f"Complete path planned: {self.full_path_grid}")
         return self.full_path_grid
     
@@ -161,9 +161,6 @@ class PathPlanning:
     
     def advance_waypoint(self):
         self.current_waypoint_idx += 1
-    
-    def is_complete(self):
-        return self.current_waypoint_idx >= len(self.full_path_grid)
 
     def print_path_map(self):
         print("\n" + "="*30)
