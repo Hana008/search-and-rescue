@@ -25,21 +25,27 @@ def main():
     # Grid Setup
     # This grid is access as [y][x]
     SAMPLE_GRID = [
-    [0, 0, 1, 0, 0], # y = 0
-    [0, 0, 0, 0, 0], # y = 1
-    [0, 0, 1, 0, 0], # y = 2
-    [0, 0, 0, 0, 0], # y = 3
-    [0, 0, 0, 0, 0]  # y = 4
+    [0, 0, 1, 0, 0, 0, 0, 0, 0, 0], # y = 0
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], # y = 1
+    [0, 0, 1, 0, 0, 0, 0, 0, 0, 0], # y = 2
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], # y = 3
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # y = 4
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ]
     
     # Grid coordinates are (x, y)
     START_POS = (0, 0)
-    LOIS = [(4, 4)] 
-    
+    LOIS = [(8, 8)]
+    CELL_SIZE_METERS = 1.0
+
     # Module Init
     movement = Movement(robot, time_step)
     localisation = Localisation(robot, time_step)
-    path_planner = PathPlanning(SAMPLE_GRID, START_POS, LOIS)
+    path_planner = PathPlanning(SAMPLE_GRID, START_POS, LOIS, CELL_SIZE_METERS)
     obstacle_avoidance = ObstacleAvoidance(robot)
     victim_detection = VictimDetection(robot, time_step)
     

@@ -2,7 +2,7 @@ import heapq
 import math
 
 class PathPlanning:
-    def __init__(self, occupancy_grid, start_pos_grid, locations_of_interest_grid):
+    def __init__(self, occupancy_grid, start_pos_grid, locations_of_interest_grid, cell_size_mtrs):
         """
             occupancy_grid: 2D list [y][x] where 0=free, 1=obstacle
             start_pos_grid: Tuple (x, y) starting position in GRID coordinates
@@ -23,7 +23,7 @@ class PathPlanning:
         self.current_waypoint_idx = 1
         
         # World Conversion
-        self.cell_size = 1.0  # Scale in metres
+        self.cell_size = cell_size_mtrs  # Scale in metres
         self.WAYPOINT_REACHED_THRESHOLD = 0.1 # metres
     
     def grid_to_world(self, x, y):

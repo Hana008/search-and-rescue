@@ -6,7 +6,7 @@ maximizedDockId: -1
 centralWidgetVisible: 1
 renderingMode: PLAIN
 orthographicViewHeight: 1
-textFiles: 2 "controllers/python_main/python_main.py" "controllers/python_main/path_planning.py" "controllers/python_main/localisation.py"
+textFiles: -1
 globalOptionalRendering: CameraFrustums
 consoles: Console:All:All
 renderingDevicePerspectives: Pioneer 3-DX:camera;1;1;0;0
