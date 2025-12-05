@@ -39,7 +39,8 @@ def main():
     
     # Grid coordinates are (x, y)
     START_POS = (0, 0)
-    LOIS = [(8, 8)]
+    # Leave LOIS empty to search every cell
+    LOIS = []
     CELL_SIZE_METERS = 1.0
 
     # Module Init

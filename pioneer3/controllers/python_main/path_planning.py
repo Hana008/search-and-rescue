@@ -2,11 +2,11 @@ import heapq
 import math
 
 class PathPlanning:
-    def __init__(self, occupancy_grid, start_pos_grid, locations_of_interest_grid, cell_size_mtrs):
+    def __init__(self, occupancy_grid, start_pos_cell, locations_of_interest_cells, cell_size_mtrs):
         """
             occupancy_grid: 2D list [y][x] where 0=free, 1=obstacle
-            start_pos_grid: Tuple (x, y) starting position in GRID coordinates
-            locations_of_interest_grid: List of tuples [(x1, y1), ...] in GRID coordinates
+            start_pos_cell: Tuple (x, y) starting position in GRID coordinates
+            locations_of_interest_cells: List of tuples [(x1, y1), ...] in GRID coordinates
 
         """
         # Grid Definition
@@ -16,8 +16,12 @@ class PathPlanning:
         self.cols = len(occupancy_grid[0]) if self.rows > 0 else 0
         
         # Path Definition
-        self.start_grid = start_pos_grid
-        self.lois_grid = locations_of_interest_grid
+        self.start_cell = start_pos_cell
+
+        if len(locations_of_interest_cells) > 0:
+            self.lois_cells = locations_of_interest_cells
+        else:
+            self.lois_cells = self.get_all_available_cells()
         
         self.full_path_grid = []
         self.current_waypoint_idx = 1
@@ -25,6 +29,14 @@ class PathPlanning:
         # World Conversion
         self.cell_size = cell_size_mtrs  # Scale in metres
         self.WAYPOINT_REACHED_THRESHOLD = 0.1 # metres
+
+    def get_all_available_cells(self):
+        cells = []
+        for i in range(self.rows):
+            for j in range(self.cols):
+                if self.grid[i][j] != 1 and (i,j) != self.start_cell:
+                    cells.append((j,i))
+        return cells
     
     def grid_to_world(self, x, y):
         
@@ -48,7 +60,7 @@ class PathPlanning:
         return (x, y)
     
     def plan(self):
-        route = [self.start_grid] + self.lois_grid + [self.start_grid]
+        route = [self.start_cell] + self.lois_cells + [self.start_cell]
         
         self.full_path_grid = []
         for i in range(len(route) - 1):
