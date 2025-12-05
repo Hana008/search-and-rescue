@@ -33,7 +33,13 @@ class PathPlanning:
     def get_all_available_cells(self):
         cells = []
         for i in range(self.rows):
-            for j in range(self.cols):
+            # Lawnmower pattern
+            if i % 2 == 1:
+                col_range = range(self.cols - 1, -1, -1) # Iterate backwards
+            else:
+                col_range = range(self.cols)
+
+            for j in col_range:
                 if self.grid[i][j] != 1 and (i,j) != self.start_cell:
                     cells.append((j,i))
         return cells
