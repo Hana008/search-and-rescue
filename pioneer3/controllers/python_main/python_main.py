@@ -110,6 +110,7 @@ def main():
             
         elif current_state == RobotState.SCANNING:
             movement.stop()
+            victims_found = victim_detection.analyse()
             
             if wait == 0:
                 if DEBUG:
