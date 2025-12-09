@@ -13,10 +13,9 @@ class RobotState(Enum):
     MISSION_COMPLETE = 4
 
 # Constants
-DEBUG = True
 MAX_SPEED = 5.24  # This is max rad/s for the wheels
 K_TURN = 2.6  # Proportional gain for turning
-WAIT_VALUE = 100 # Temporary timer value to break up movement between cells
+WAIT_VALUE = 0 # Temporary timer value to break up movement between cells
 
 def main():
     robot = Robot()
@@ -27,9 +26,9 @@ def main():
     SAMPLE_GRID = [
     [0, 0, 1, 0, 0, 0, 0, 0, 0, 0], # y = 0
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], # y = 1
-    [0, 0, 1, 0, 0, 0, 0, 0, 0, 0], # y = 2
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], # y = 2
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], # y = 3
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # y = 4
+    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],  # y = 4 ...
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -38,9 +37,10 @@ def main():
     ]
     
     # Grid coordinates are (x, y)
+    # Has to be 0,0 currently need to fix
     START_POS = (0, 0)
     # Leave LOIS empty to search every cell
-    LOIS = []
+    LOIS = [(3,4)]
     CELL_SIZE_METERS = 1.0
 
     # Module Init
@@ -54,9 +54,6 @@ def main():
     current_state = RobotState.INIT_PLANNING
     mission_complete_printed = False
     wait = WAIT_VALUE
-    
-
-    print("Robot controller started...")
     
     # Main loop
     while robot.step(time_step) != -1:
@@ -110,35 +107,21 @@ def main():
             
         elif current_state == RobotState.SCANNING:
             movement.stop()
-            victims_found = victim_detection.analyse()
-            
-            if wait == 0:
-                if DEBUG:
-                    print("\n--- DEBUG: SCAN COMPLETE ---")
-                    pos = localisation.get_position()
-                    grid_pos = path_planner.world_to_grid(pos[0], pos[1])
-                    orientation = localisation.get_orientation()
-                    
-                    print(f"  World Pos: ({pos[0]:.2f}, {pos[1]:.2f})")
-                    print(f"  Grid Pos:  {grid_pos} (x,y)")
-                    print(f"  Orientation: {math.degrees(orientation):.1f} degrees")
-                    print("------------------------------\n")
-                
-
-                path_planner.advance_waypoint() 
-                current_state = RobotState.NAVIGATING
-
-                wait = WAIT_VALUE
-            else:
-                wait -= 1
+            victims_found = victim_detection.analyse(localisation)
+            path_planner.advance_waypoint() 
+            current_state = RobotState.NAVIGATING
             
             
         elif current_state == RobotState.MISSION_COMPLETE:
             movement.stop()
             
             # If the route hasn't been printed and we are in debug mode, we print the route
-            if not mission_complete_printed and DEBUG:
-                print("Printing final path map...")
+            if not mission_complete_printed:
+                print("Potential Victim Locations:\n")
+                fv = victim_detection.found_victims
+                for i in range(len(fv)):
+                    grid_space = path_planner.world_to_grid_rounded(fv[i][0], fv[i][1])
+                    print(f"Location {i + 1}: {grid_space[0]}, {grid_space[1]}\n")
                 path_planner.print_path_map()
                 mission_complete_printed = True
             
@@ -154,29 +137,6 @@ class Movement:
         
         self.keyboard = Keyboard()
         self.keyboard.enable(time_step)
-
-    # For testing, not currently implemented
-    def keyboard_movement(self):
-        left_vel = 0.0
-        right_vel = 0.0
-        
-        key = self.keyboard.getKey()
-        
-        if key == Keyboard.UP:
-            left_vel = MAX_SPEED
-            right_vel = MAX_SPEED
-        elif key == Keyboard.DOWN:
-            left_vel = -MAX_SPEED
-            right_vel = -MAX_SPEED
-        elif key == Keyboard.LEFT:
-            left_vel = -MAX_SPEED * 0.5
-            right_vel = MAX_SPEED * 0.5
-        elif key == Keyboard.RIGHT:
-            left_vel = MAX_SPEED * 0.5
-            right_vel = -MAX_SPEED * 0.5
-        
-        self.left_wheel.setVelocity(left_vel)
-        self.right_wheel.setVelocity(right_vel)
 
     def set_wheel_velocities(self, left_vel, right_vel):
         """Helper to ensure velocities are within the allowed range."""

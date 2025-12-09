@@ -64,6 +64,18 @@ class PathPlanning:
         y = max(0, min(self.rows - 1, y))
         
         return (x, y)
+
+    def world_to_grid_rounded(self, world_x, world_y):
+        # Converts world (world_x, world_y) to grid (x, y).
+        
+        x = int(round(world_x) / self.cell_size)
+        y = int(round(world_y) / self.cell_size)
+        
+        # Clamp to valid range
+        x = max(0, min(self.cols - 1, x))
+        y = max(0, min(self.rows - 1, y))
+        
+        return (x, y)
     
     def plan(self):
         route = [self.start_cell] + self.lois_cells + [self.start_cell]
@@ -181,20 +193,19 @@ class PathPlanning:
         self.current_waypoint_idx += 1
 
     def print_path_map(self):
-        print("\n" + "="*30)
-        print("      MISSION COMPLETE: PATH MAP      ")
+        print("PATH MAP:")
         print("="*30)
-        
+
         vis_grid = [['0' for _ in range(self.cols)] for _ in range(self.rows)]
         
         for (x, y) in self.full_path_grid:
             if vis_grid[y][x] == '0':
                 vis_grid[y][x] = '1'
         
-        for (x, y) in self.lois_grid:
+        for (x, y) in self.lois_cells:
             vis_grid[y][x] = 'L'
         
-        start_x, start_y = self.start_grid
+        start_x, start_y = self.start_cell
         vis_grid[start_y][start_x] = 'S'
         
         header = "y\\x " + " ".join(map(str, range(self.cols)))

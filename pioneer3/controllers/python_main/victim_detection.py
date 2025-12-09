@@ -1,117 +1,109 @@
-from controller import Robot, Camera, Motor
-from localisation import Localisation
+from controller import Robot, Camera, Lidar
+import cv2
+import numpy as np
+import math
 
 class VictimDetection:
     def __init__(self, robot, time_step):
         self.robot = robot
         self.time_step = time_step
-        self.camera = self.init_camera()
+        
+        # Holds positions of victims found.
+        self.found_victims = [] 
+
+        # Camera
+        self.camera = self.robot.getDevice("camera")
+        self.camera.enable(self.time_step)
+        self.height = self.camera.getHeight()
+        self.width = self.camera.getWidth()
+        self.fov = self.camera.getFov()
 
         # Motors
-        self.left_motor = self.robot.getDevice("left wheel motor")
-        self.right_motor = self.robot.getDevice("right wheel motor")
-        self.left_motor.setPosition(float('inf'))
-        self.right_motor.setPosition(float('inf'))
-        self.left_motor.setVelocity(0)
-        self.right_motor.setVelocity(0)
-    
-    def init_camera(self):
-        try:
-            camera = self.robot.getDevice("camera")
-            camera.enable(self.time_step)
-            self.width = camera.getWidth()
-            self.height = camera.getHeight()
-            camera.recognitionEnable(self.time_step)
-            print("Camera enabled successfully.")
-            return camera
-        except Exception as e:
-            print("Could not enable camera.")
-            return None
+        self.left_motor = self.robot.getDevice("left wheel")
+        self.right_motor = self.robot.getDevice("right wheel")
 
-    def analyse(self):
-        SPEED = 4
-        pause_counter = 0
-        # RED, NONE = range(2)
-        # victim = False
+        # LIDAR
+        self.lidar = self.robot.getDevice("Sick LMS 291")
+        self.lidar.enable(self.time_step)
+        self.lidar.enablePointCloud()
+
+    def analyse(self, localisation):
+        SCAN_SPEED = 2.3
+        duration_sec = (2 * math.pi / SCAN_SPEED) * 1.4
+        steps_needed = int((duration_sec * 1000) / self.time_step)
+
+        self.left_motor.setVelocity(-SCAN_SPEED)
+        self.right_motor.setVelocity(SCAN_SPEED)
+        
+        current_step = 0
 
         while self.robot.step(self.time_step) != -1:
-            image = self.camera.getImage()
+            current_step += 1
+            if current_step > steps_needed: break
 
-            if pause_counter > 0:
-                pause_counter -= 1
+            raw_image = self.camera.getImage()
+            if raw_image is None: continue
 
-            # Case 1 — waiting in front of object
-            if pause_counter > 640 / self.time_step:
-                left_speed = 0
-                right_speed = 0
+            img_np = np.frombuffer(raw_image, np.uint8).reshape((self.height, self.width, 4))
+            img_bgr = img_np[:, :, :3]
+            img_hsv = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2HSV)
 
-            # Case 2 — turn but ignore image
-            elif pause_counter > 0:
-                left_speed = -SPEED
-                right_speed = SPEED
+            # Green Mask
+            mask = cv2.inRange(img_hsv, np.array([40, 50, 50]), np.array([80, 255, 255]))
+            contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-            # Case 3
-            else:
-                if image is None:
-                    left_speed = 0
-                    right_speed = 0
-                    print("Could not get image")
-                else:
-                    red_sum = green_sum = blue_sum = 0
-
-                    # Get colours
-                    for i in range(self.width // 3, 2 * self.width // 3):
-                        for j in range(self.height // 2, 3 * self.height // 4):
-                            red_sum += self.camera.imageGetRed(image, self.width, i, j)
-                            green_sum += self.camera.imageGetGreen(image, self.width, i, j)
-                            blue_sum += self.camera.imageGetBlue(image, self.width, i, j)
+            for contour in contours:
+                if cv2.contourArea(contour) > 200:
+                    M = cv2.moments(contour)
+                    if M["m00"] != 0:
+                        cx = int(M["m10"] / M["m00"])
                         
+                        center_margin = self.width * 0.10
+                        screen_center = self.width / 2
 
-                    # Check if colour is red
-                    if red_sum > 3 * green_sum and red_sum > 3 * blue_sum:
-                        victim = True
-                    else:
-                        victim = False
+                        if (screen_center - center_margin) < cx < (screen_center + center_margin):
+                            
+                            lidar_range_image = self.lidar.getRangeImage()
+                            center_index = len(lidar_range_image) // 2
+                            center_readings = lidar_range_image[center_index-5 : center_index+5]
+                            
+                            # Filter out self-hits (< 0.25m) and infinity (> 8.0m)
+                            valid_readings = [r for r in center_readings if 0.25 < r < 8.0]
+                            
+                            if len(valid_readings) > 0:
+                                dist = min(valid_readings)
+                            else:
+                                dist = 0.5 # If there are no valid readings (e.g. too close or too far) it defaults to 0.5 metres in front.
 
-                    
-                    if not victim:
-                        left_speed = -SPEED
-                        right_speed = SPEED
-                        print("No victim detected")
-                    else:
-                        left_speed = 0
-                        right_speed = 0
-                        print("Victim found")
+                            robot_pos = localisation.get_position()
+                            robot_angle = localisation.get_orientation()
 
-                        # Get position
-                        
-                        # position = Localisation.get_position()
-                        
-                        objects = self.camera.getRecognitionObjects()
-                        number_of_objects = len(objects)
-                        print(f"Recognised {number_of_objects} victims.")
+                            pixel_ratio = (cx - screen_center) / self.width
+                            angle_offset = pixel_ratio * self.fov 
+                            total_angle = robot_angle + angle_offset
 
-                        positions = []
-                        orientations = []
-                        for i, obj in enumerate(objects):
-                            # Position (3D)
-                            pos = obj.getPosition()
-                            positions.append(pos)
-                            print(f"Relative position of victim {i}: {pos[0]} {pos[1]} {pos[2]}")
+                            v_x = robot_pos[0] + (dist * math.cos(total_angle))
+                            v_y = robot_pos[1] + (dist * math.sin(total_angle))
 
-                            # Orientation (quaternion)
-                            ori = obj.getOrientation()
-                            orientations.append(ori)
-                            print(f"Relative orientation of victim {i}: {ori[0]} {ori[1]} {ori[2]} {ori[3]}")
-                        
-                        pause_counter = int(1280 / self.time_step)
+                            # Check against the list of already found victims
+                            if self._is_new_victim((v_x, v_y)):
+                                print(f"NEW VICTIM ADDED: X={v_x:.2f} Y={v_y:.2f}")
+                                self.found_victims.append((v_x, v_y))
 
-                        return [positions, orientations]        
-
-
-            # Set motor speeds
-            self.left_motor.setVelocity(left_speed)
-            self.right_motor.setVelocity(right_speed)
+        self.left_motor.setVelocity(0)
+        self.right_motor.setVelocity(0)
         
-        return []
+        return self.found_victims
+
+    def _is_new_victim(self, new_pos):
+        DUPLICATE_THRESHOLD = 1
+        
+        for v in self.found_victims:
+            dx = new_pos[0] - v[0]
+            dy = new_pos[1] - v[1]
+            dist = math.sqrt(dx*dx + dy*dy)
             
+            # if victim at least the threshold away, then its a new victim.
+            if dist < DUPLICATE_THRESHOLD: 
+                return False 
+        return True

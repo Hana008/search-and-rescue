@@ -4,6 +4,7 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/RectangleArena.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/robots/adept/pioneer3/protos/Pioneer3dx.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/devices/sick/protos/SickLms291.proto"
 
 WorldInfo {
   info [
@@ -16,8 +17,8 @@ WorldInfo {
 }
 Viewpoint {
   fieldOfView 0.660595
-  orientation 0.01011017681139479 -0.9996218739205661 -0.025571341466147784 5.52962738277072
-  position -20.70662990835858 -2.49995368494293 17.79483189199241
+  orientation -0.07843791729067179 0.9811971292899466 0.17635103233117014 0.8512361753396234
+  position -22.46450555327171 -8.021696676836639 18.6502993776102
 }
 TexturedBackground {
 }
@@ -25,7 +26,7 @@ TexturedBackgroundLight {
   castShadows FALSE
 }
 RectangleArena {
-  translation -1.92911 -1.45714 7.10543e-15
+  translation 0 0 7.10543e-15
   floorSize 10 10
   floorTileSize 2 2
   wallThickness 0.1
@@ -44,18 +45,21 @@ RectangleArena {
   }
 }
 DEF PIONEER_3DX Pioneer3dx {
-  hidden position_0_0 0.07506653986299135
-  hidden position_0_1 3152.4025825771487
-  hidden position_0_2 2702.27223254271
-  hidden rotation_1 0.606233887615183 -0.5623524146051976 -0.5623524120110855 2.0516112775703648
-  hidden position_1_0 -8044.792195263339
-  hidden rotation_2 -1 0 0 2.315002073468036
-  hidden rotation_4 0.7055798111884217 -0.7055798567829416 0.06568253759923455 3.2727692294054487
-  hidden rotation_9 0.4536798054438801 -0.45367978691909533 -0.7670392982588619 1.8329578233462627
-  translation -6.43403 -5.92712 0.0968252
+  hidden position_0_0 -1.6155906777709657
+  hidden position_0_1 3152.2460286709547
+  hidden position_0_2 3023.5910756659246
+  hidden rotation_1 -0.015837856136064615 -0.7070180697433184 -0.7070181124762263 3.173265636072841
+  hidden position_1_0 -8939.453635730433
+  hidden rotation_2 -1 0 0 4.764128921061264
+  hidden rotation_4 0.7018872682557301 -0.7018873169186068 0.12127842763372138 3.382970614719516
+  hidden rotation_9 -0.09534332759623776 0.09534327465574836 0.9908679578333306 4.703215178999949
+  translation -4.53791 -4.54821 0.0968324
   controller "python_main"
   supervisor TRUE
   extensionSlot [
+    SickLms291 {
+      translation 0.2 0 0
+    }
     Compass {
     }
     GPS {
@@ -73,13 +77,13 @@ DEF PIONEER_3DX Pioneer3dx {
   ]
 }
 Solid {
-  translation -4.4768 -3.94999 0.193722
-  rotation -3.110341226608643e-10 1.3579660096270045e-11 1 1.9430625280502912e-07
+  translation -2.57259 -4.53763 0.193722
+  rotation -1.4167772346023722e-10 -1.5234850416549835e-10 0.9999999999999999 1.9430625280248106e-07
   children [
     Shape {
       appearance Appearance {
         material Material {
-          diffuseColor 1 0 0
+          diffuseColor 0 1 0
         }
       }
       geometry Box {
@@ -94,13 +98,13 @@ Solid {
   }
 }
 Solid {
-  translation -4.45501 -5.97989 0.193722
-  rotation -3.110341226608643e-10 1.3579660096270045e-11 1 1.9430625280502912e-07
+  translation -0.515003 -0.531634 0.193722
+  rotation -9.916720039277646e-11 -9.201100000306968e-11 1 1.9430625279927033e-07
   children [
     Shape {
       appearance Appearance {
         material Material {
-          diffuseColor 1 0 0
+          diffuseColor 0 1 0
         }
       }
       geometry Box {
