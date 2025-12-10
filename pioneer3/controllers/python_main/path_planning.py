@@ -191,30 +191,3 @@ class PathPlanning:
     
     def advance_waypoint(self):
         self.current_waypoint_idx += 1
-
-    def print_path_map(self):
-        print("PATH MAP:")
-        print("="*30)
-
-        vis_grid = [['0' for _ in range(self.cols)] for _ in range(self.rows)]
-        
-        for (x, y) in self.full_path_grid:
-            if vis_grid[y][x] == '0':
-                vis_grid[y][x] = '1'
-        
-        for (x, y) in self.lois_cells:
-            vis_grid[y][x] = 'L'
-        
-        start_x, start_y = self.start_cell
-        vis_grid[start_y][start_x] = 'S'
-        
-        header = "y\\x " + " ".join(map(str, range(self.cols)))
-        print(header)
-        print("   " + "-" * (len(header) - 3))
-
-        for y, row in enumerate(vis_grid):
-            print(f"{y} | {' '.join(row)}")
-        
-        print("="*30)
-        print("Legend: S=Start, L=LOI, 1=Path, 0=Free")
-        print("="*30 + "\n")

@@ -17,8 +17,8 @@ WorldInfo {
 }
 Viewpoint {
   fieldOfView 0.660595
-  orientation -0.07843791729067179 0.9811971292899466 0.17635103233117014 0.8512361753396234
-  position -22.46450555327171 -8.021696676836639 18.6502993776102
+  orientation -0.0009614702976942121 0.9999977144555443 0.0019096226209878173 0.9358009971864053
+  position -11.860212505080362 -3.495422776146491 12.695245964151027
 }
 TexturedBackground {
 }
@@ -45,15 +45,18 @@ RectangleArena {
   }
 }
 DEF PIONEER_3DX Pioneer3dx {
-  hidden position_0_0 -1.6155906777709657
-  hidden position_0_1 3152.2460286709547
-  hidden position_0_2 3023.5910756659246
-  hidden rotation_1 -0.015837856136064615 -0.7070180697433184 -0.7070181124762263 3.173265636072841
-  hidden position_1_0 -8939.453635730433
-  hidden rotation_2 -1 0 0 4.764128921061264
-  hidden rotation_4 0.7018872682557301 -0.7018873169186068 0.12127842763372138 3.382970614719516
-  hidden rotation_9 -0.09534332759623776 0.09534327465574836 0.9908679578333306 4.703215178999949
-  translation -4.53791 -4.54821 0.0968324
+  hidden position_0_0 -1.6994632446746392
+  hidden position_0_1 3272.0296144453464
+  hidden position_0_2 3757.606029289022
+  hidden linearVelocity_0 -3.7829810751678316e-10 3.06846971564045e-11 -2.3518918099156533e-11
+  hidden angularVelocity_0 1.1254565768855027e-11 -4.0930969787306673e-10 -5.450808170119718e-11
+  hidden rotation_1 -0.04550629544158841 -0.7063742330663974 -0.7063742775151441 3.2325424207872353
+  hidden position_1_0 -10630.937402680393
+  hidden rotation_2 1 0 0 0.21213706746776734
+  hidden rotation_4 -0.7069429933207035 0.706943033840624 0.021520945587459008 3.184627987733241
+  hidden rotation_9 0.5201322282161012 -0.5201322189165855 -0.6774399899739184 1.9507445171699593
+  translation -4.5045696936066655 -4.534139820176322 0.09683336184425437
+  rotation 0.003285054645689006 -0.9997178562594354 0.023524801636014853 0.040649787342944894
   controller "python_main"
   supervisor TRUE
   extensionSlot [
@@ -77,29 +80,95 @@ DEF PIONEER_3DX Pioneer3dx {
   ]
 }
 Solid {
-  translation -2.57259 -4.53763 0.193722
-  rotation -1.4167772346023722e-10 -1.5234850416549835e-10 0.9999999999999999 1.9430625280248106e-07
+  translation -2.5314766926351666 -0.4337124242010261 0.3497881910437032
+  rotation -1.7605138811002836e-15 3.774204477466275e-15 1 0.0022021320607054397
   children [
     Shape {
       appearance Appearance {
         material Material {
-          diffuseColor 0 1 0
+          diffuseColor 1 1 1
+        }
+        texture ImageTexture {
+          url [
+            "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/default/worlds/textures/red_brick_wall.jpg"
+          ]
         }
       }
       geometry Box {
-        size 0.4 0.4 0.4
+        size 0.8 0.8 0.8
       }
     }
   ]
+  name "solid(2)"
   boundingObject Box {
-    size 0.4 0.4 0.4
+    size 0.8 0.8 0.8
   }
   physics Physics {
   }
+  linearVelocity -1.0376319806033357e-17 -5.6688862637280095e-18 9.878253111306449e-05
+  angularVelocity 1.665334536937737e-17 -3.330669073875468e-17 -8.867152221862981e-20
 }
 Solid {
-  translation -0.515003 -0.531634 0.193722
-  rotation -9.916720039277646e-11 -9.201100000306968e-11 1 1.9430625279927033e-07
+  translation -2.4993358731333952 -4.501836521067882 0.3497881910437031
+  rotation 3.402063095277774e-14 3.9952002708726884e-16 1 0.0010153621411533016
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 1 1 1
+        }
+        texture ImageTexture {
+          url [
+            "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/default/worlds/textures/red_brick_wall.jpg"
+          ]
+        }
+      }
+      geometry Box {
+        size 0.8 0.8 0.8
+      }
+    }
+  ]
+  name "solid(5)"
+  boundingObject Box {
+    size 0.8 0.8 0.8
+  }
+  physics Physics {
+  }
+  linearVelocity -6.466219630550324e-18 1.4025950492901866e-17 9.878253111307295e-05
+  angularVelocity -2.4980018054066007e-17 -3.3306690738754676e-17 -2.303794256383857e-19
+}
+Solid {
+  translation -0.49222499063419733 -2.520631174087343 0.3497881910437031
+  rotation -8.622749204558758e-16 -2.2768908533307678e-14 1 0.002245973392337587
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 1 1 1
+        }
+        texture ImageTexture {
+          url [
+            "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/default/worlds/textures/red_brick_wall.jpg"
+          ]
+        }
+      }
+      geometry Box {
+        size 0.8 0.8 0.8
+      }
+    }
+  ]
+  name "solid(4)"
+  boundingObject Box {
+    size 0.8 0.8 0.8
+  }
+  physics Physics {
+  }
+  linearVelocity 8.14730704098218e-18 -1.5691858719016853e-17 9.878253111306335e-05
+  angularVelocity 3.33066907387547e-17 1.0785207688568521e-32 -8.594205346653878e-20
+}
+Solid {
+  translation -0.30209341839974085 -0.28047802823614243 0.17079396250000708
+  rotation -2.2373017101409918e-10 -5.289147111857962e-12 1 3.2946569671283424e-07
   children [
     Shape {
       appearance Appearance {
@@ -108,13 +177,37 @@ Solid {
         }
       }
       geometry Box {
-        size 0.4 0.4 0.4
+        size 0.35 0.35 0.35
+      }
+    }
+  ]
+  name "solid(3)"
+  boundingObject Box {
+    size 0.35 0.35 0.35
+  }
+  physics Physics {
+  }
+  linearVelocity -3.4762274435051106e-17 -3.171923860176743e-17 -4.1363539612826017e-16
+  angularVelocity 2.2774231949656135e-16 -2.269678136466576e-16 2.505311326424639e-18
+}
+Solid {
+  translation -1.46434 -4.53292 0.170794
+  rotation -8.543530723396207e-12 4.0656244769279475e-12 1 2.406250134461706e-07
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0 1 0
+        }
+      }
+      geometry Box {
+        size 0.35 0.35 0.35
       }
     }
   ]
   name "solid(1)"
   boundingObject Box {
-    size 0.4 0.4 0.4
+    size 0.35 0.35 0.35
   }
   physics Physics {
   }

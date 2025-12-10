@@ -18,7 +18,7 @@ K_TURN = 2.6  # Proportional gain for turning
 WAIT_VALUE = 0 # Temporary timer value to break up movement between cells
 # Whether victim_detection.analyse() is called at ecery cell visited (True), or only at LOIs (FALSE), 
 # if there are no LOIs specified then all cells become LOIs
-ANALYSE_AT_EVERY_CELL = False
+ANALYSE_AT_EVERY_CELL = True
 
 def main():
     robot = Robot()
@@ -29,9 +29,9 @@ def main():
     SAMPLE_GRID = [
     [0, 0, 1, 0, 0, 0, 0, 0, 0, 0], # y = 0
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], # y = 1
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], # y = 2
+    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0], # y = 2
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], # y = 3
-    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],  # y = 4 ...
+    [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],  # y = 4 ...
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -123,11 +123,42 @@ def main():
             if not mission_complete_printed:
                 print("Potential Victim Locations:\n")
                 fv = victim_detection.found_victims
+                fv_grid_space = []
                 for i in range(len(fv)):
                     grid_space = path_planner.world_to_grid_rounded(fv[i][0], fv[i][1])
                     print(f"Location {i + 1}: {grid_space[0]}, {grid_space[1]}\n")
-                path_planner.print_path_map()
+                    fv_grid_space.append((grid_space[0], grid_space[1]))
+                str_grid = [[str(x) for x in row] for row in SAMPLE_GRID]
+                print_path_map(str_grid, path_planner.full_path_grid, fv_grid_space, START_POS, LOIS)
                 mission_complete_printed = True
+
+
+def print_path_map(grid, cells_visited, victim_positions, start_cell, lois):
+        print("PATH MAP:")
+        print("="*30)
+        
+        for (x, y) in lois:
+            grid[y][x] = 'L'
+
+        for (x, y) in victim_positions:
+            grid[y][x] = 'V'
+
+        grid[start_cell[0]][start_cell[1]] = 'S'
+
+        for (x, y) in cells_visited:
+            if grid[y][x] == '0':
+                grid[y][x] = 'P'
+        
+        header = "y\\x " + " ".join(map(str, range(len(grid[0]))))
+        print(header)
+        print("   " + "-" * (len(header) - 3))
+
+        for y, row in enumerate(grid):
+            print(f"{y} | {' '.join(row)}")
+        
+        print("="*30)
+        print("Key: S=Start, L=LOI, P=Path, 0=Free, 1=Obstacle, V=Victim Position")
+        print("="*30 + "\n")
             
     
 class Movement:
