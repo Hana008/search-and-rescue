@@ -16,6 +16,9 @@ class RobotState(Enum):
 MAX_SPEED = 5.24  # This is max rad/s for the wheels
 K_TURN = 2.6  # Proportional gain for turning
 WAIT_VALUE = 0 # Temporary timer value to break up movement between cells
+# Whether victim_detection.analyse() is called at ecery cell visited (True), or only at LOIs (FALSE), 
+# if there are no LOIs specified then all cells become LOIs
+ANALYSE_AT_EVERY_CELL = False
 
 def main():
     robot = Robot()
@@ -106,8 +109,9 @@ def main():
             
             
         elif current_state == RobotState.SCANNING:
-            movement.stop()
-            victims_found = victim_detection.analyse(localisation)
+            if ANALYSE_AT_EVERY_CELL or path_planner.get_next_waypoint_world() in LOIS:
+                movement.stop()
+                victims_found = victim_detection.analyse(localisation)
             path_planner.advance_waypoint() 
             current_state = RobotState.NAVIGATING
             
