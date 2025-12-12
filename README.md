@@ -14,7 +14,7 @@ Search and rescue robot: the robot’s job is to explore a known map in an effic
 
 ## Components implemented by the team
 
-### 1. main.py (Main Script)
+### 1. python_main.py (Main Script)
 - Integrates all modules (path planning, victim detection, localisation)
 - Coordinates the robot workflow and handles control flow
 - Calls each module in the correct sequence and manages interactions
