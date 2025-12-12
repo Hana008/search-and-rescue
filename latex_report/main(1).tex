@@ -37,6 +37,11 @@ This report details the design and real-time integration of the proposed system.
 
 This project integrates standard, well-established algorithms in robotics. For global path planning, we rely on the $A^*$ algorithm introduced by Hart et al. \cite{hart1968formal}, which is the industry standard for optimal pathfinding in static grid maps. To handle dynamic navigation, we utilise the Artificial Potential Field (APF) method proposed by Khatib \cite{khatib1986real}, which allows for reactive obstacle avoidance. Finally, for victim identification, we employ standard colour-based computer vision techniques utilising the HSV colour space, implemented via the OpenCV library \cite{bradski2000opencv}.
 
+Beyond individual planning and avoidance techniques, the integration of global path planning with LiDAR-based local obstacle avoidance has also been widely studied in mobile robotics. A common architectural assumption is that a global planner provides long-term navigation guidance, while a local reactive layer, driven by LiDAR sensing, handles short-range obstacle avoidance and allows the robot to temporarily deviate from the planned path when necessary. Once the obstacle is cleared, the robot is expected to rejoin the original global route.
+
+However, prior studies have shown that this integration is non-trivial in practice. Purely reactive LiDAR-based avoidance strategies do not inherently preserve global path consistency, particularly in cluttered or dynamic environments. Without explicit replanning, state recovery, or tight coupling between planning and perception modules, repeated local corrections may cause the robot to drift away from the intended trajectory, leading to oscillatory behaviour or navigation failure. These challenges motivate further investigation into the interaction between global planning and local avoidance mechanisms under realistic sensing and computational constraints.
+
+
 \section{System Setup and Problem Definition [Patrick]}
 
 \subsection{Simulation Environment and Robot}
@@ -48,6 +53,20 @@ The continuous known environment is mapped onto a binary occupancy grid with 0 r
 Victims are represented within the simulation as static, green 0.35m cubes. This colour choice was selected to maximise segmentation contrast against the environment's floor and wall textures.
 
 \section{Algorithms and Framework}
+% ============================
+% Added LiDAR exploration section (Junlin Lu)
+% ============================
+\subsection{LiDAR Integration and Design Exploration [Junlin Lu]}
+
+During system development, an exploratory implementation was conducted to investigate the integration of LiDAR-based local obstacle avoidance with the global path planning framework. The LiDAR sensor was successfully activated and configured to provide real-time range measurements, which were continuously monitored through console output during robot execution. This confirmed correct sensor operation and data availability for reactive control.
+
+The LiDAR integration and avoidance logic were initially implemented and validated within an early 5$\times$5 experimental robot setup. To support this functionality, modifications were required in both the main control program and the local obstacle avoidance submodule. Within this simplified environment, real-time LiDAR feedback was successfully used to detect nearby obstacles and generate avoidance-related diagnostic outputs, demonstrating the feasibility of LiDAR-driven reactive behaviour at the subsystem level.
+
+When attempting to integrate the modified main controller into the updated project structure and larger navigation map, compatibility issues were encountered. These issues were primarily related to differences in map representation, control flow assumptions, and module interfaces between the initial experimental setup and the final system architecture. Due to limited remaining development time, a full reintegration and debugging process within the updated GitHub Webots project could not be completed.
+
+As a result, this LiDAR-based exploration is presented as a validated design experiment rather than a fully integrated component of the final system. A supplementary demonstration video is provided to illustrate successful LiDAR activation and real-time obstacle feedback within the 5$\times$5 setup. This exploration highlights the practical challenges of combining global path planning with reactive LiDAR-based avoidance under constrained development conditions, and motivates tighter integration strategies in future work.
+
+
 
 \subsection{System Architecture and Driver Code [Patrick]}
 The system's core logic is encapsulated in a main module which acts as the orchestrator for all sub-modules (path planning, obstacle avoidance, localisation, and victim detection).
@@ -149,7 +168,15 @@ V_{base} = \frac{V_{max}}{1 + |K_{turn} \cdot \theta_{err}|}
 This throttling mechanism ensures the robot naturally slows down when correcting large orientation errors, improving trajectory accuracy.
 
 \subsection{Obstacle Avoidance [Junlin]}
-This module provides reactive safety using Artificial Potential Fields (APF) \cite{khatib1986real}.
+
+This module provides reactive safety using Artificial Potential Fields (APF) \cite{khatib1986real}, in which obstacles are modelled as repulsive potentials that influence the robot’s motion in real time. The primary role of this module is to prevent imminent collisions by generating short-range corrective control actions based on onboard sensor feedback.
+
+During development, the obstacle avoidance logic was explored in conjunction with LiDAR sensing to assess its effectiveness when integrated with the global path planning framework. The LiDAR sensor was successfully activated and configured to provide real-time range measurements, which were continuously monitored through console output during execution. This enabled the detection of nearby obstacles and the triggering of avoidance-related responses at runtime.
+
+Experimental testing revealed that while APF-based avoidance is effective for immediate collision prevention, purely reactive control does not inherently preserve consistency with the globally planned path. In cluttered environments, repeated local corrections driven by LiDAR measurements may cause the robot to deviate significantly from the original trajectory. Without explicit replanning or state recovery mechanisms, such deviations can accumulate, making it difficult for the robot to reliably rejoin the intended route.
+
+These observations highlight a fundamental limitation of reactive obstacle avoidance when used in isolation. Although APF provides a lightweight and computationally efficient solution for local safety, its integration with global navigation requires careful coordination. This motivates the need for tighter coupling between global planning and local avoidance, such as incorporating online replanning, path correction strategies, or predictive control methods in future system iterations.
+
 
 
 \subsection{Victim Detection and Localisation [Patrick \& Hana]}
