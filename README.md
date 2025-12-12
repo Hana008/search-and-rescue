@@ -30,7 +30,7 @@ Search and rescue robot: the robot’s job is to explore a known map in an effic
 - Detects victim markers
 - Retrieves localisation/orientation
 
-### 4. localisation (module)
+### 4. localisation.py
 - Implemented by Patrick
 - Handles determination of robot position and orientation in the environment.
 
