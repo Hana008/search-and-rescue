@@ -15,7 +15,6 @@ class RobotState(Enum):
 # Constants
 MAX_SPEED = 5.24  # This is max rad/s for the wheels
 K_TURN = 2.6  # Proportional gain for turning
-WAIT_VALUE = 0 # Temporary timer value to break up movement between cells
 # Whether victim_detection.analyse() is called at ecery cell visited (True), or only at LOIs (FALSE), 
 # if there are no LOIs specified then all cells become LOIs
 ANALYSE_AT_EVERY_CELL = True
@@ -56,7 +55,6 @@ def main():
     # State Machine
     current_state = RobotState.INIT_PLANNING
     mission_complete_printed = False
-    wait = WAIT_VALUE
     
     # Main loop
     while robot.step(time_step) != -1:
@@ -169,12 +167,9 @@ class Movement:
         self.right_wheel.setPosition(float('inf'))
         self.left_wheel.setVelocity(0.0)
         self.right_wheel.setVelocity(0.0)
-        
-        self.keyboard = Keyboard()
-        self.keyboard.enable(time_step)
 
     def set_wheel_velocities(self, left_vel, right_vel):
-        """Helper to ensure velocities are within the allowed range."""
+        # Helper to ensure velocities are within the allowed range.
         self.left_wheel.setVelocity(max(min(left_vel, MAX_SPEED), -MAX_SPEED))
         self.right_wheel.setVelocity(max(min(right_vel, MAX_SPEED), -MAX_SPEED))
     
