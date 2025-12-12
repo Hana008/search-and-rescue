@@ -167,7 +167,20 @@ Once a target is aligned, the system calculates its global coordinates $(V_x, V_
 To prevent redundant counting, new detections are cross-referenced against the history list; any candidate within a Euclidean distance of $1.0\text{m}$ from a known victim is discarded.
 
 \subsection{Localisation [Maureen]}
-TODO \\
+The localisation module provides the robot with an estimate of its planar position and orientation at each timestep, which is essential for navigation, mapping, and victim localisation. In this project, localisation was implemented using the Pioneer 3-DX robot’s GPS and compass sensors available in the Webots simulation environment.
+
+Initially, more complex localisation approaches such as probabilistic methods and odometry-based estimation were considered. However, these methods introduced significant integration complexity and instability. Given the availability of reliable global position measurements in simulation, a deterministic GPS- and compass-based localisation strategy was selected as a robust and appropriate solution.
+
+The GPS sensor provides the robot’s absolute position in world coordinates. Since the robot operates on a planar surface, only the horizontal components are required. Upon the first valid GPS reading, the localisation module records the robot’s initial position, which serves as a reference origin. All subsequent position estimates are expressed relative to this starting pose:
+\begin{equation}
+x_{\text{rel}} = x - x_0, \quad y_{\text{rel}} = y - y_0
+\end{equation}
+This relative coordinate system simplifies integration with the grid-based path planner and enables consistent tracking of robot movement throughout the mission.
+
+Orientation is obtained from the compass sensor, which outputs a directional vector aligned with the global reference frame. The robot’s yaw angle $\theta$ is computed using the $\text{atan2}$ function, providing a continuous heading estimate in radians. This orientation information is used by the navigation controller to calculate heading error and generate appropriate wheel velocities.
+
+Beyond basic pose estimation, localisation was further integrated to support system evaluation. The robot’s relative position is converted into grid coordinates to track visited cells, enabling analysis of search coverage. Additionally, the robot’s trajectory is logged over time, and the final estimated pose is compared against the initial pose to evaluate navigation accuracy and accumulated localisation error.
+
 
 \section{Experimental Results}
 
