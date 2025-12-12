@@ -34,3 +34,11 @@ Search and rescue robot: the robot’s job is to explore a known map in an effic
 - Implemented by Patrick
 - Handles determination of robot position and orientation in the environment.
 
+### 5.obstacle_avoidance.py
+
+- Implemented by Junlin Lu
+- Implements LiDAR-based local obstacle avoidance using Artificial Potential Fields (APF).
+- Activates and processes real-time LiDAR range data to detect nearby obstacles.
+- Generates reactive control responses for short-range collision prevention.
+- Explores the interaction between reactive avoidance and global path planning, highlighting limitations in maintaining path consistency without explicit replanning.
+
