@@ -156,7 +156,7 @@ This module provides reactive safety using Artificial Potential Fields (APF) \ci
 The victim detection module executes a discrete "stop-and-scan" manoeuvre. The robot rotates in place (velocity $\pm 2.3$ rad/s) for a full revolution, processing the camera feed to identify green contours in HSV space.
 
 \subsubsection{Sensor Fusion and Alignment}
-To ensure accurate geo-referencing, the system implements a strict "Centre-of-View" constraint. Valid detections are only processed when the target's centroid falls within the central 10\% of the image frame. This spatial filtering is necessary to align the visual target with the LIDAR's narrow forward-facing measurement beam, ensuring that the depth reading corresponds precisely to the visual object.
+To ensure accurate geo-referencing, the system implements a strict "Centre-of-View" constraint. Valid detections are only processed when the target's centroid falls within the central 20\% of the image frame. This spatial filtering is necessary to align the visual target with the LIDAR's narrow forward-facing measurement beam, ensuring that the depth reading corresponds precisely to the visual object.
 
 \subsubsection{Coordinate Transformation}
 Once a target is aligned, the system calculates its global coordinates $(V_x, V_y)$ by projecting the measured distance $D$ relative to the robot's current pose $(R_x, R_y, \theta)$. The mapping includes the angular offset $\alpha_{cam}$ of the pixel centroid relative to the optical axis:
