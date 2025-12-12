@@ -176,7 +176,23 @@ During development, the obstacle avoidance logic was explored in conjunction wit
 Experimental testing revealed that while APF-based avoidance is effective for immediate collision prevention, purely reactive control does not inherently preserve consistency with the globally planned path. In cluttered environments, repeated local corrections driven by LiDAR measurements may cause the robot to deviate significantly from the original trajectory. Without explicit replanning or state recovery mechanisms, such deviations can accumulate, making it difficult for the robot to reliably rejoin the intended route.
 
 These observations highlight a fundamental limitation of reactive obstacle avoidance when used in isolation. Although APF provides a lightweight and computationally efficient solution for local safety, its integration with global navigation requires careful coordination. This motivates the need for tighter coupling between global planning and local avoidance, such as incorporating online replanning, path correction strategies, or predictive control methods in future system iterations.
-
+\begin{algorithm}[!t]
+\caption{LiDAR Initialisation and Sector-wise Distance Monitoring}
+\begin{algorithmic}[1]
+\REQUIRE LiDAR device name, time step $\Delta t$, number of rays $N$, field of view $FOV$
+\STATE $lidar \leftarrow \textbf{GetDevice}(\texttt{"lidar"})$
+\STATE \textbf{Enable}($lidar$, $\Delta t$)
+\STATE $ranges \leftarrow \textbf{GetRangeImage}(lidar)$  \COMMENT{length $N$}
+\STATE Define sector indices: $S_L=[0, \lfloor N/3 \rfloor)$, $S_C=[\lfloor N/3 \rfloor, \lfloor 2N/3 \rfloor)$, $S_R=[\lfloor 2N/3 \rfloor, N)$
+\LOOP
+    \STATE $ranges \leftarrow \textbf{GetRangeImage}(lidar)$
+    \STATE $d_L \leftarrow \min(ranges[i] \mid i \in S_L)$
+    \STATE $d_C \leftarrow \min(ranges[i] \mid i \in S_C)$
+    \STATE $d_R \leftarrow \min(ranges[i] \mid i \in S_R)$
+    \STATE \textbf{Print}(\texttt{"LiDAR L/C/R = "}, $d_L$, \texttt{","}, $d_C$, \texttt{","}, $d_R$)
+\ENDLOOP
+\end{algorithmic}
+\end{algorithm}
 
 
 \subsection{Victim Detection and Localisation [Patrick \& Hana]}
