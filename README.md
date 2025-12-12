@@ -4,5 +4,12 @@ Search and rescue robot: the robot’s job is to explore a known map in an effic
 
 The packages we used are: 
 - pioneer 3dx robot
+- Enum
+- Math
+- Cv2
+- Numpy
+- Heapq
+- OpenCV
+
 
 What we implemented:
