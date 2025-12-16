@@ -1,0 +1,125 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/robots/adept/pioneer3/protos/Pioneer3dx.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/obstacles/protos/OilBarrel.proto"
+
+WorldInfo {
+  info [
+    "Pioneer 3DX (Adept Mobile Robots)"
+    "This two-wheel, two-motor differential drive robot has in addition a rear caster wheel"
+    "It is programmed to perform a simple obstacle avoidance behavior based on the values sensed by its 16 sonars"
+  ]
+  title "Pioneer 3-DX with blinking LEDs moving according to a Braitenberg rule"
+  basicTimeStep 8
+}
+Viewpoint {
+  fieldOfView 0.660595
+  orientation 0.010114986471338024 -0.9998916979835567 -0.010690152115131041 4.767277979699322
+  position -2.5559014394000124 -2.139957997497767 28.127822378304913
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+  castShadows FALSE
+}
+RectangleArena {
+  translation -1.92911 -1.45714 7.10543e-15
+  floorSize 5 5
+  floorTileSize 2 2
+  wallThickness 0.1
+  wallHeight 0.4
+  wallAppearance PBRAppearance {
+    baseColorMap ImageTexture {
+      url [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/default/worlds/textures/red_brick_wall.jpg"
+      ]
+    }
+    roughness 1
+    metalness 0
+    textureTransform TextureTransform {
+      scale 11 13
+    }
+  }
+}
+OilBarrel {
+  translation -1.89 -0.48 0.44
+}
+DEF PIONEER_3DX Pioneer3dx {
+  hidden position_0_0 -3.1920061218099707
+  hidden position_0_1 3123.548788536061
+  hidden position_0_2 2673.807087570093
+  hidden rotation_1 -0.5967515657172056 -0.5674008683091549 -0.5674009371300693 4.2176477005170145
+  hidden position_1_0 -8015.4561919279
+  hidden rotation_2 1 0 0 1.8882600332519812
+  hidden rotation_4 -0.34971844594083507 0.3497184152346697 0.8691340740153262 4.5725887986784475
+  hidden rotation_9 0.6286255097376834 -0.6286255739687173 0.4578862918449714 4.000378200853216
+  translation -3.98802 -3.5156 0.0968641
+  controller "python_main"
+  supervisor TRUE
+  extensionSlot [
+    Lidar {
+      fieldOfView 3.14
+      maxRange 5
+    }
+    Compass {
+    }
+    GPS {
+    }
+    Camera {
+      translation 0.12 0 0.17
+      children [
+        Shape {
+          geometry Box {
+            size 0.1 0.05 0.05
+          }
+        }
+      ]
+    }
+  ]
+}
+Solid {
+  translation -1.93221 -1.45095 0.193722
+  rotation -3.028062822767675e-10 -3.5616782862710867e-12 1 1.9430625281109396e-07
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 1 0 0
+        }
+      }
+      geometry Box {
+        size 0.4 0.4 0.4
+      }
+    }
+  ]
+  boundingObject Box {
+    size 0.4 0.4 0.4
+  }
+  physics Physics {
+  }
+}
+Solid {
+  translation -2.02558 -3.43647 0.193722
+  rotation -3.028062822767675e-10 -3.5616782862710867e-12 1 1.9430625281109396e-07
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 1 0 0
+        }
+      }
+      geometry Box {
+        size 0.4 0.4 0.4
+      }
+    }
+  ]
+  name "solid(1)"
+  boundingObject Box {
+    size 0.4 0.4 0.4
+  }
+  physics Physics {
+  }
+}
