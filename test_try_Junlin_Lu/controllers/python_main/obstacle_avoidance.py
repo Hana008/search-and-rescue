@@ -2,62 +2,6 @@
 from controller import Robot
 import math
 
-```
-"""
-obstacle_avoidance.py — LiDAR-based Reactive Obstacle Avoidance (Webots)
-
-Overview
---------
-This module implements a lightweight, purely reactive obstacle-avoidance layer for a
-differential-drive robot in Webots. It is designed to sit *on top of* a higher-level
-controller (e.g., global path following) and modify the commanded left/right wheel
-speeds when nearby obstacles are detected by a 2D LiDAR.
-
-Core idea
----------
-1) Read LiDAR range data and split it into three equal angular sectors:
-   - Left, Center, Right
-2) Compute the minimum valid distance in each sector (ignoring invalid/too-close values).
-3) Decide whether to:
-   - Do nothing (fully trust the global planner) when the environment is clear,
-   - Reduce forward speed when an obstacle is within a slowing distance,
-   - Add a steering bias towards the freer side when the front is close,
-   - Trigger an emergency recovery (slight reverse + sharp turn) if too close.
-
-Key parameters
---------------
-- min_valid: Filters out very small readings (e.g., robot body/self-hits or noise).
-- slow_distance: If the closest obstacle is within this range, forward speed is scaled down.
-- safe_distance: If the front sector is within this range, steering bias is introduced.
-- emergency_distance: If any sector is within this range, emergency manoeuvre takes over.
-
-Control formulation
--------------------
-Given the base wheel commands (base_left, base_right) from the global controller:
-- Convert wheel speeds into:
-    v = 0.5 * (left + right)   # translational component
-    w = 0.5 * (right - left)   # rotational component (simplified)
-- Apply avoidance adjustments to v and/or w
-- Convert back to wheel speeds:
-    left  = v - w
-    right = v + w
-- Clamp outputs to [-max_speed, +max_speed]
-
-Debug output
-------------
-Each control step prints:
-- mode (NONE / SLOW_ONLY / AROUND / EMERGENCY_TURN)
-- min distance and sector distances (L/C/R)
-- base wheel commands and the adjusted wheel commands
-
-Limitations (important for analysis)
-------------------------------------
-This approach is reactive and memory-less: it does not explicitly track the global path,
-does not build a local map/costmap, and has no guaranteed strategy to rejoin the planned
-trajectory after a detour. In narrow corridors or U-shaped obstacles, this can lead to
-oscillation or failure to make progress without additional arbitration logic.
-"""
-```
 
 
 class ObstacleAvoidance:
